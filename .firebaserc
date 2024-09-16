@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "devremote2k": {
+      "hosting": {
+        "danotes": [
+          "devremote2k"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "devremote2k"
+  }
+}
