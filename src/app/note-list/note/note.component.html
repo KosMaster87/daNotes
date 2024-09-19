@@ -1,14 +1,14 @@
 <div class="note" (mouseenter)="hovered = true" (mouseleave)="deleteHovered()">
     @if(edit){
         <input [(ngModel)]="note.title" type="text">
-        <textarea [(ngModel)]="note.content"></textarea>
+        <textarea [(ngModel)]="note.description"></textarea>
     }
     @if(!edit){
         <h3>
             {{note.title}}
         </h3>
         <p>
-            {{note.content}}
+            {{note.description}}
         </p>
     }
 
