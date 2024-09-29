@@ -12,6 +12,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   addDoc,
   updateDoc,
   deleteDoc,
@@ -39,9 +40,62 @@ export class NoteListService {
     this.unsubNotesMarked = this.subNotesListMarked();
     this.unsubTrash = this.subTrashList();
   }
+  // ----------------------
+
+  // // Neue Methode um Subkollektionen abzurufen
+  // async getSubcollectionData(parentId: string) {
+  //   const parentDocRef = doc(this.firestore, 'notes', parentId);
+  //   const subColRef = collection(parentDocRef, 'subKos'); // Setze den Namen der Subkollektion
+  //   const subColSnapshot = await getDocs(subColRef);
+  //   subColSnapshot.forEach((doc) => {
+  //     console.log(doc.id, ' => ', doc.data());
+  //   });
+  // }
+
+  // // Methode um alle Subkollektionen rekursiv abzurufen
+  // async getAllSubcollections(parentRef: any) {
+  //   const subColRef = collection(parentRef, 'subKos'); // Setze den Namen der Subkollektion
+  //   const subColSnapshot = await getDocs(subColRef);
+
+  //   subColSnapshot.forEach((doc) => {
+  //     console.log(doc.id, ' => ', doc.data());
+  //     // Rekursion für weitere Subkollektionen
+  //     this.getAllSubcollections(doc.ref);
+  //   });
+  // }
+
+  // // ----------------------
+
+  // loadSubcollection(parentId: string) {
+  //   this.noteListService
+  //     .getSubcollectionData(parentId)
+  //     .then(() => {
+  //       console.log('Subkollektionen wurden geladen.');
+  //     })
+  //     .catch((error) => {
+  //       console.error('Fehler beim Laden der Subkollektionen: ', error);
+  //     });
+  // }
+
+  // loadAllSubcollections(parentId: string) {
+  //   const parentDocRef = this.noteListService.getSingelDocRef(
+  //     'notes',
+  //     parentId
+  //   );
+  //   this.noteListService
+  //     .getAllSubcollections(parentDocRef)
+  //     .then(() => {
+  //       console.log('Alle Subkollektionen wurden geladen.');
+  //     })
+  //     .catch((error) => {
+  //       console.error('Fehler beim Laden aller Subkollektionen: ', error);
+  //     });
+  // }
+
+  // ----------------------
 
   subNoteslList() {
-    let ref = collection(this.firestore, 'notes/8BLvFuD4oxIv2BU3Gq8g/subKos/');
+    let ref = collection(this.firestore, '/notes/6lzWqfosKjR2OupdBWP1/subKos/');
 
     const q = query(
       // ref,
@@ -50,26 +104,32 @@ export class NoteListService {
       // orderBy('title'),
       // limit(100)
     );
-    return onSnapshot(q, (list) => {
-      this.normalNotes = [];
-      list.forEach((element) => {
-        this.normalNotes.push(this.setNoteObject(element.data(), element.id));
-      });
+    return onSnapshot(
+      q,
+      (list) => {
+        this.normalNotes = [];
+        list.forEach((element) => {
+          this.normalNotes.push(this.setNoteObject(element.data(), element.id));
+        });
 
-      list.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-          console.log('New note: ', change.doc.data());
-        }
-        if (change.type === 'modified') {
-          console.log('Modified note: ', change.doc.data());
-        }
-        if (change.type === 'removed') {
-          console.log('Removed note: ', change.doc.data());
-        }
-      });
-    });
+        list.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            console.log('New note: ', change.doc.data());
+          }
+          if (change.type === 'modified') {
+            console.log('Modified note: ', change.doc.data());
+          }
+          if (change.type === 'removed') {
+            console.log('Removed note: ', change.doc.data());
+          }
+        });
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
-
+  // ----------------------
   subNotesListMarked() {
     const q = query(
       this.getNotesRef(),
@@ -170,6 +230,7 @@ export class NoteListService {
       return 'notes';
     }
     return 'trash';
+    // return 'trash';
     // return 'defaultCollection';
   }
 
